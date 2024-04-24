@@ -5,7 +5,6 @@ import main.GamePanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Bees {
@@ -19,7 +18,9 @@ public class Bees {
     public boolean isInHome = false;
     public int bee_id;
     public boolean information_gotten = false;
-    public Rectangle solidArea = new Rectangle(0, 0, GamePanel.UNIT_SIZE, GamePanel.UNIT_SIZE); // pour m'aider à détecter les collisions .
+    public Rectangle solidArea = new Rectangle(0, 0, GamePanel.UNIT_SIZE, GamePanel.UNIT_SIZE); // pour m'aider à
+                                                                                                // détecter les
+                                                                                                // collisions .
 
     static public Sources[] infoBoxOfSources = new Sources[GamePanel.NUMBER_OF_SOURCES];
     public boolean letMove = true;
@@ -98,13 +99,16 @@ public class Bees {
 
         this.stop_Labeille++;
         this.letMove = false;
-//        if (this instanceof Employee_bee)
-//            System.out.println("I am an employee bee , my number is :  " + this.bee_id + " is still waiting , its stop_Labeille is at "+this.stop_Labeille);
-//        else
-//            System.out.println("I am an ECLAIREUSE bee , my number is :  " + this.bee_id + " is still waiting , its stop_Labeille is at "+this.stop_Labeille);
+        // if (this instanceof Employee_bee)
+        // System.out.println("I am an employee bee , my number is : " + this.bee_id + "
+        // is still waiting , its stop_Labeille is at "+this.stop_Labeille);
+        // else
+        // System.out.println("I am an ECLAIREUSE bee , my number is : " + this.bee_id +
+        // " is still waiting , its stop_Labeille is at "+this.stop_Labeille);
 
         if (this.stop_Labeille > tempsDattente) {
-//            System.out.println("The bee:  " + this.bee_id + " is still waiting , its stop_Labeille is at "+this.stop_Labeille);
+            // System.out.println("The bee: " + this.bee_id + " is still waiting , its
+            // stop_Labeille is at "+this.stop_Labeille);
             this.information_gotten = true;
             if (this instanceof Employee_bee)
                 System.out.println("The bee: " + this.bee_id + " was waiting at position: x = "
@@ -128,7 +132,8 @@ public class Bees {
             bee_xpos += (int) ((dx * vitesse) / distance);
             bee_ypos += (int) ((dy * vitesse) / distance);
 
-            if (this.bee_ypos <= GamePanel.POSITION_Y_DE_LA_RUCHE && this.bee_xpos >= GamePanel.POSITION_X_DE_LA_RUCHE) {
+            if (this.bee_ypos <= GamePanel.POSITION_Y_DE_LA_RUCHE
+                    && this.bee_xpos >= GamePanel.POSITION_X_DE_LA_RUCHE) {
                 this.letMove = false;
                 this.isInHome = true;
                 this.information_gotten = false;
@@ -137,8 +142,6 @@ public class Bees {
         }
         return 0;
     }
-
-
 
     public static int compter_nombre_de_source_decouvertes() {
         int cpt = 0;
@@ -154,5 +157,5 @@ public class Bees {
         for (int i = 0; i < Bees.infoBoxOfSources.length; i++) {
             infoBoxOfSources[i] = tempo;
         }
-        }
+    }
 }
