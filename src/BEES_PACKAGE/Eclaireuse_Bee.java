@@ -4,58 +4,51 @@ import main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import Sources.Sources;
 
-public class Eclaireuse_Bee extends Bees{
+public class Eclaireuse_Bee extends Bees {
 
-
-    public Eclaireuse_Bee()
-    {
+    public Eclaireuse_Bee() {
         super();
         type = "Eclaireuse";
-        try{
+        try {
             this.image = ImageIO.read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ.png"));
-        }catch(IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void bee_move(int temps,int vitesse) {
+    public void bee_move(int temps, int vitesse) {
         if (letMove) {
-            if(dx > 1 && dy == 0)
-            {
-                try{
-                    this.image = ImageIO.read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ-REV.png"));
-                }catch(IOException e)
-                {
+            if (dx > 1 && dy == 0) {
+                try {
+                    this.image = ImageIO
+                            .read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ-REV.png"));
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if(dy > 1 && dx == 0)
-            {
-                try{
-                    this.image = ImageIO.read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ_ROTATION_Y.png"));
-                }catch(IOException e)
-                {
+            if (dy > 1 && dx == 0) {
+                try {
+                    this.image = ImageIO
+                            .read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ_ROTATION_Y.png"));
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if( dy < 1 && dx == 0)
-            {
-                try{
-                    this.image = ImageIO.read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ_ROTATE_X.png"));
-                }catch(IOException e)
-                {
+            if (dy < 1 && dx == 0) {
+                try {
+                    this.image = ImageIO
+                            .read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ_ROTATE_X.png"));
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if ( dx < 1 && dy == 0)
-            {
-                try{
+            if (dx < 1 && dy == 0) {
+                try {
                     this.image = ImageIO.read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ.png"));
-                }catch(IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -78,4 +71,29 @@ public class Eclaireuse_Bee extends Bees{
         }
     }
 
+    public void getSourceInformation(Sources[] src) {
+        this.solidArea.x += this.bee_xpos;
+        this.solidArea.y += this.bee_ypos;
+
+        for (Sources source_decouverte : src) {
+            if (source_decouverte != null) {
+                source_decouverte.solidArea.x += source_decouverte.source_xpos;
+                source_decouverte.solidArea.y += source_decouverte.source_ypos;
+
+                if (this.solidArea.intersects(source_decouverte.solidArea)) {
+                    if (Bees.infoBoxOfSources[source_decouverte.source_id] == null || gotInfoNowWait) {
+                        if (Bees.infoBoxOfSources[source_decouverte.source_id] == null) {
+                            Bees.infoBoxOfSources[source_decouverte.source_id] = source_decouverte;
+                        }
+                        abeille_suce_et_attend(300);
+                        source_decouverte.reduceQuantityBy(1.99);
+                    }
+                }
+                source_decouverte.solidArea.x = 0;
+                source_decouverte.solidArea.y = 0;
+            }
+        }
+        this.solidArea.x = 0;
+        this.solidArea.y = 0;
+    }
 }

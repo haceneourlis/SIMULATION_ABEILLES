@@ -1,15 +1,18 @@
 package main;
 
 import BEES_PACKAGE.Bees;
-import BEES_PACKAGE.Employee_bee;
 import BEES_PACKAGE.Observatrice_bee;
 import NATURE_DESSIN_PACKAGE.DessinTuiles;
 import Sources.Sources;
 
 import javax.swing.*;
+import javax.xml.transform.Source;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Random;
 
 public class GamePanel extends JPanel implements ActionListener {
 
@@ -19,12 +22,8 @@ public class GamePanel extends JPanel implements ActionListener {
     public static final int UNIT_SIZE = 25;
 
     // ça me servira de limite pour la lécture de mon fichier map.txt.
-    public static final int maxScreenRow = GamePanel.SCREEN_HEIGHT / UNIT_SIZE; // récuperer le nombres de lignes
-                                                                                // (représentation matrice de notre
-                                                                                // interface graphique )
-    public static final int maxScreenCol = GamePanel.SCREEN_WIDTH / UNIT_SIZE; // récuperer le nombres de colonnes
-                                                                               // (représentation matrice de notre
-                                                                               // interface graphique )
+    public static final int maxScreenRow = GamePanel.SCREEN_HEIGHT / UNIT_SIZE;
+    public static final int maxScreenCol = GamePanel.SCREEN_WIDTH / UNIT_SIZE;
 
     // les tuiles : arbres , eau , herbe .... ;
     public DessinTuiles tuiles = new DessinTuiles(this);
@@ -35,7 +34,7 @@ public class GamePanel extends JPanel implements ActionListener {
     public static final int NUMBER_OF_SOURCES = 10;
     // public static final int NUMBER_OF_SOURCES =1;
 
-    static public int SOURCES_MAXIMUM_QUANTITY = 99999;
+    static public int SOURCES_MAXIMUM_QUANTITY = 3000;
     static public int SOURCES_MAXIMUM_QUALITY = 10;
     static public Sources[] les_fleurs = new Sources[GamePanel.NUMBER_OF_SOURCES];
 
@@ -58,25 +57,19 @@ public class GamePanel extends JPanel implements ActionListener {
     // static public Bees[] eclaireuses_bees = new Bees[1];
 
     static public Bees[] employee_bees = new Bees[GamePanel.NUMBER_OF_SOURCES];
-    static public Bees[] observatrice_bees = new Observatrice_bee[(int) (GamePanel.NUMBER_OF_SOURCES / 3)];
+    static public Bees[] observatrice_bees = new Observatrice_bee[(int) (GamePanel.NUMBER_OF_SOURCES / 2)];
     public CreateurDobjets LeCreateur = new CreateurDobjets();
 
+    private Timer timer ;
+    private double quantite_de_pollen_initial = 0;
     public GamePanel() {
 
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setFocusable(true);
         setGameObjects();
-
-        new Timer(60, this).start();
-
-    }
-
-    public void display_sourceINFOS() {
-        for (int i = 0; i < GamePanel.les_fleurs.length; i++) {
-            if (les_fleurs[i] != null)
-                System.out.println(
-                        "the source :" + les_fleurs[i].source_id + "is at " + les_fleurs[i].quantity + " quantity");
-        }
+        quantite_de_pollen_initial = LeCreateur.quantite_de_pollen();
+        timer = new Timer(60, this);
+        timer.start();
     }
 
     public void setGameObjects() {
@@ -134,9 +127,19 @@ public class GamePanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        calcul_pollen();
         update();
+
+        GameFrame frame_parent = (GameFrame) SwingUtilities.getWindowAncestor(this);
+        poullen_finiOuuu(frame_parent);
+
         repaint();
     }
+
+
+
+
 
     static public int how_much_in_home = 0;
     static public boolean release_eclaireuses = true;
@@ -145,11 +148,13 @@ public class GamePanel extends JPanel implements ActionListener {
     int onetime = 1; // afin de affecter les sources au employées qu'une seule fois ; pas à chaque
                      // update();
 
+    boolean do_it_again = true;
+
     private void update() {
         if (release_eclaireuses) {
             for (Bees eclaireuses_bee : eclaireuses_bees) {
                 if (eclaireuses_bee != null) {
-                    eclaireuses_bee.bee_move(3, 5);
+                    eclaireuses_bee.bee_move(3, 7);
                     eclaireuses_bee.getSourceInformation(les_fleurs);
                     GamePanel.how_much_in_home += eclaireuses_bee.getBackHome(9);
                 }
@@ -164,9 +169,6 @@ public class GamePanel extends JPanel implements ActionListener {
                 release_employees = true;
             } else {
                 for (Bees eclaireuses_bee : eclaireuses_bees) {
-                    // if (eclaireuses_bee != null) {
-                    // si l'abeille est déjà arrivé à la ruche , il ne faut pas appeler la méthode
-                    // getbackHome();
                     eclaireuses_bee.information_gotten = true;
                     GamePanel.how_much_in_home += eclaireuses_bee.getBackHome(9);
                     // }
@@ -192,19 +194,16 @@ public class GamePanel extends JPanel implements ActionListener {
             for (Bees employee_bee : employee_bees) {
                 if (employee_bee != null) {
                     // System.out.println("what the hell");
-                    employee_bee.bee_move(2, 3);
+                    employee_bee.bee_move(1, 7);
                     // prend les info de ta source et scan le voisinage !
                     employee_bee.getSourceInformation(les_fleurs);
-                    Employee_bee temp = (Employee_bee) employee_bee;
-                    how_much_in_home += temp.exploreVoisinage();
-                    if (onetime == 2 && how_much_in_home == GamePanel.employee_bees.length) {
-                        onetime++;
-                        release_observatrices = true;
-                        // int cmpt = 0;
-                        System.out.println("****-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'****");
-                        display_sourceINFOS();
-                    }
+                    how_much_in_home += employee_bee.exploreVoisinage();
                 }
+            }
+            if (how_much_in_home == GamePanel.employee_bees.length) {
+                how_much_in_home = 0;
+                release_observatrices = true;
+                release_employees = false;
             }
         }
 
@@ -212,23 +211,106 @@ public class GamePanel extends JPanel implements ActionListener {
             // Elles observent les danses des employées à leur retour
             // et perçoivent avec un certain degré d’erreur la qualité estimée de chaque
             // source. Elles choisissent alors une source de nourriture
-            if (onetime == 3) {
-                int i = 0;
-                for (Bees abeille_observatrice : observatrice_bees) {
-                    if (abeille_observatrice != null && Bees.infoBoxOfSources[i] != null) {
-                        abeille_observatrice.source_to_explore = Bees.infoBoxOfSources[i];
+
+            int i;
+            if (do_it_again) {
+                System.out.println("I am here for the nth time ");
+                for (Bees ab_obs : observatrice_bees) {
+                    Sources source_to_go_to = null;
+                    do {
+                        i = new Random().nextInt(0, Bees.infoBoxOfSources.length - 1);
+                        System.out.println("for the bee : " + ab_obs + "I am doing this shit fot i = "+ i);
+                        if(Bees.infoBoxOfSources[i].quantity < 0)
+                            source_to_go_to = Bees.infoBoxOfSources[i];
+                    }while(source_to_go_to == null);
+
+                    if (ab_obs != null) {
+                        ab_obs.source_to_explore = source_to_go_to;
+                        ab_obs.letMove = true;
+                        ab_obs.gotInfoNowWait = false;
+                        ab_obs.goingHome = false;
+                        ab_obs.information_gotten = false;
+                        ab_obs.isInHome = false;
+                        do_it_again = false;
                     }
-                    i++;
                 }
-                onetime++;
             }
 
-            for (Bees abeille_observatrice : observatrice_bees) {
-                if (abeille_observatrice != null) {
-                    abeille_observatrice.bee_move(2, 3);
+            for (Bees ab_ob : observatrice_bees) {
+                if (ab_ob != null) {
+                    ab_ob.bee_move(2, 6);
+                    // prend les info de ta source et scan le voisinage !
+                    ab_ob.getSourceInformation(les_fleurs);
+                    how_much_in_home += ab_ob.exploreVoisinage();
                 }
+            }
+            if (how_much_in_home == GamePanel.observatrice_bees.length) {
+                do_it_again = true;
+                how_much_in_home = 0;
+                onetime++;
+
             }
         }
     }
+
+     public void poullen_finiOuuu(GameFrame ce_frame) {
+
+        double quantite_de_pollen_Now = LeCreateur.quantite_de_pollen();
+
+         if (quantite_de_pollen_Now <= quantite_de_pollen_initial * 20 /100) {
+             // fin du jeu
+
+             GamePanel.reinitialiserLeJeu();
+             timer.stop();
+             ce_frame.dispose();
+             new FinJeu();
+         }
+     }
+
+     private static void reinitialiserLeJeu()
+     {
+         release_eclaireuses = true;
+         release_employees = false;
+         release_observatrices = false ;
+
+         for(Bees a: eclaireuses_bees)
+         {
+             a.letMove = true;
+             a.gotInfoNowWait = false;
+             a.goingHome = false;
+             a.information_gotten = false;
+             a.isInHome = false;
+         }
+         for(Bees a: employee_bees)
+         {
+             a.letMove = true;
+             a.gotInfoNowWait = false;
+             a.goingHome = false;
+             a.information_gotten = false;
+             a.isInHome = false;
+             a.source_to_explore = null;
+         }
+         for(Bees a: observatrice_bees)
+         {
+             a.letMove = true;
+             a.gotInfoNowWait = false;
+             a.goingHome = false;
+             a.information_gotten = false;
+             a.isInHome = false;
+             a.source_to_explore = null;
+         }
+
+         Arrays.fill(Bees.infoBoxOfSources, null);
+     }
+     public void calcul_pollen ()
+     {
+         int somme = 0;
+         for (Sources s : les_fleurs) {
+             if(s!=null)
+                 somme += (int) s.quantity;
+         }
+
+         System.out.println("somme = " + somme);
+     }
 
 }
