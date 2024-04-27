@@ -10,7 +10,6 @@ public class Eclaireuse_Bee extends Bees {
 
     public Eclaireuse_Bee() {
         super();
-        type = "Eclaireuse";
         try {
             this.image = ImageIO.read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ.png"));
         } catch (IOException e) {
@@ -58,11 +57,13 @@ public class Eclaireuse_Bee extends Bees {
                     / Math.sqrt((dx * dx + dy * dy)));
 
             if (bee_xpos >= GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE || bee_xpos <= 0) {
+                bee_xpos = Math.max(0, Math.min(bee_xpos, GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE));
                 dx = dx * -1;
-                dy = 0;
+                dy = 1;
             }
             if (bee_ypos >= GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE || bee_ypos <= 0) {
-                dx = 0;
+                bee_ypos = Math.max(0, Math.min(bee_ypos, GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE));
+                dx = 1;
                 dy = dy * -1;
             } else {
                 dx = dx + rand.nextInt(-10, 10);
@@ -85,8 +86,8 @@ public class Eclaireuse_Bee extends Bees {
                         if (Bees.infoBoxOfSources[source_decouverte.source_id] == null) {
                             Bees.infoBoxOfSources[source_decouverte.source_id] = source_decouverte;
                         }
-                        abeille_suce_et_attend(300);
-                        source_decouverte.reduceQuantityBy(1.99);
+                        abeille_suce_et_attend(70,0.99);
+                        source_decouverte.reduceQuantityBy(0.99);
                     }
                 }
                 source_decouverte.solidArea.x = 0;

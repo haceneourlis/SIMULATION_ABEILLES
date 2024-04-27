@@ -10,11 +10,9 @@ import java.util.Random;
 public abstract class Bees {
 
     public BufferedImage image;
-    public String type;
     public int bee_xpos, bee_ypos;
     public Sources source_to_explore;
     public int dx = 1, dy = 1;
-    public int vitesse = 3;
     public boolean isInHome = false;
     public int bee_id;
     public boolean information_gotten = false;
@@ -27,6 +25,8 @@ public abstract class Bees {
     public int stop_Labeille = 0;
     public boolean gotInfoNowWait = false;
     public boolean goingHome = false;
+
+    public double ventre = 0;
 
     Random rand = new Random();
 
@@ -58,11 +58,12 @@ public abstract class Bees {
         }
     }
 
-    public void abeille_suce_et_attend(int tempsDattente) {
+    public void abeille_suce_et_attend(int tempsDattente,double qteAsucer) {
         this.information_gotten = false;
         this.gotInfoNowWait = true;
         this.letMove = false; // pour bloquer les abeilles ( t.important );
 
+        this.ventre += qteAsucer;
         this.stop_Labeille++;
 
         if (this.stop_Labeille > tempsDattente) {
@@ -70,6 +71,7 @@ public abstract class Bees {
             this.information_gotten = true;
         }
     }
+
 
     public int compteur_retour_ruche = 0;
 
@@ -82,7 +84,7 @@ public abstract class Bees {
             int[] Y_directions = { -1, -1, +0, +0, +1, +1, +1, +1, +1, +0, +0, +0, -1, -1, +0, +0};
 
             if (compteur_retour_ruche >= X_directions.length) {
-                return this.getBackHome(14);
+                return this.getBackHome(50);
             } else {
                 bee_xpos += GamePanel.UNIT_SIZE * X_directions[compteur_retour_ruche];
                 bee_ypos += GamePanel.UNIT_SIZE * Y_directions[compteur_retour_ruche];
@@ -107,6 +109,11 @@ public abstract class Bees {
             double distance = Math.sqrt(dx * dx + dy * dy);
             bee_xpos += (int) ((dx * vitesse) / distance);
             bee_ypos += (int) ((dy * vitesse) / distance);
+
+            if(this instanceof Employee_bee)
+            {
+               ((Employee_bee) this).release_a_banana();
+            }
 
             if (this.bee_ypos <= GamePanel.POSITION_Y_DE_LA_RUCHE
                     && this.bee_xpos >= GamePanel.POSITION_X_DE_LA_RUCHE) {
@@ -133,5 +140,11 @@ public abstract class Bees {
         for (int i = 0; i < Bees.infoBoxOfSources.length; i++) {
             infoBoxOfSources[i] = tempo;
         }
+    }
+
+
+    public String toString()
+    {
+        return "bee source_id = "+bee_id ;
     }
 }

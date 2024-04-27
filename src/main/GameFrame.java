@@ -9,7 +9,7 @@ public class GameFrame extends JFrame {
     GameFrame() {
         panel = new GamePanel();
         this.add(panel);
-        this.setTitle("THEM BEEEEZ");
+        this.setTitle("BEEEEZ");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();

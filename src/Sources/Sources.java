@@ -1,11 +1,13 @@
 package Sources;
 
+import BEES_PACKAGE.Bees;
 import main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Sources extends Rectangle {
 
@@ -14,12 +16,22 @@ public class Sources extends Rectangle {
     public int source_ypos;
     public int source_id ;
     public BufferedImage image;
-    public int quality; // rating from 1 to 10
-
+    public int quality;
     public double quantity;
+
+    public ArrayList<Bees> surMoi;
 
     public Rectangle solidArea = new Rectangle(0,0,GamePanel.UNIT_SIZE, GamePanel.UNIT_SIZE);
 
+    public Sources(int source_id,int source_xpos, int source_ypos)
+    {
+        this.source_id = source_id;
+        this.source_xpos = source_xpos;
+        this.source_ypos = source_ypos;
+
+        solidArea.x += source_xpos;
+        solidArea.y += source_ypos;
+    }
     public Sources(int quality, int source_xpos, int source_ypos, int source_id, double quantity)
     {
         try{
@@ -33,9 +45,12 @@ public class Sources extends Rectangle {
         this.source_id = source_id;
         this.source_xpos = source_xpos;
         this.source_ypos = source_ypos;
-        this.quantity = quantity;
         solidArea.x += source_xpos;
         solidArea.y += source_ypos;
+
+        this.quantity = quantity;
+        surMoi = new ArrayList<Bees>();
+
     }
 
 
@@ -52,9 +67,15 @@ public class Sources extends Rectangle {
 
 
     public void draw(Graphics2D g2) {
-        g2.drawImage(image, source_xpos, source_ypos, GamePanel.UNIT_SIZE, GamePanel.UNIT_SIZE, null);
+        g2.drawImage(this.image, this.source_xpos, this.source_ypos, GamePanel.UNIT_SIZE, GamePanel.UNIT_SIZE, null);
     }
 
-
-
+    public String toString()
+    {
+        return "source id = "+ source_id
+                +"-- source xpos = "+ source_xpos
+                +"-- source ypos ="+ source_ypos
+                +"source quantity = "+ quantity
+                +"source quality = "+quality;
+    }
 }

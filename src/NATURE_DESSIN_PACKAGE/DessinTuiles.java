@@ -21,11 +21,11 @@ public class DessinTuiles {
         matrice_de_dessin = new int[GamePanel.maxScreenRow][GamePanel.maxScreenCol];
 
         // charger les images ...
-        getTileImage();
+        getTuilesImages();
         lire_matrice_de_dessin();
     }
 
-    public void getTileImage() {
+    public void getTuilesImages() {
         try {
             tuile[0] = new Tuile();
             tuile[0].image = ImageIO.read(getClass().getResourceAsStream("/Tuiles/grass01.png"));

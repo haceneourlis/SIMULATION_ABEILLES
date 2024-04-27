@@ -2,9 +2,12 @@ package main;
 
 import BEES_PACKAGE.Eclaireuse_Bee;
 import BEES_PACKAGE.Employee_bee;
+import BEES_PACKAGE.Frelon;
 import BEES_PACKAGE.Observatrice_bee;
 import Sources.Sources;
 
+
+import java.util.ArrayList;
 import java.util.Random;
 
 public class CreateurDobjets {
@@ -17,6 +20,11 @@ public class CreateurDobjets {
 
 
     public void set_objects() {
+
+        GamePanel.le_frelon =  Frelon.creerUnFrelon();
+        GamePanel.les_bananes = new ArrayList<>();
+
+
         // them beez eclaireuses
         for (int k = 0; k < GamePanel.eclaireuses_bees.length; k++) {
             GamePanel.eclaireuses_bees[k] = new Eclaireuse_Bee();
@@ -58,6 +66,7 @@ public class CreateurDobjets {
                     rand.nextInt(GamePanel.UNIT_SIZE * 7, GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE);
             GamePanel.les_fleurs[j] = new Sources(rand.nextInt(1, GamePanel.SOURCES_MAXIMUM_QUALITY), x, y, j, rand.nextInt(500, GamePanel.SOURCES_MAXIMUM_QUANTITY));
         }
+
 
     }
 
