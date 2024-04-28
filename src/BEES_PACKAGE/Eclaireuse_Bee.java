@@ -56,6 +56,11 @@ public class Eclaireuse_Bee extends Bees {
             bee_ypos += (int) ((dy * vitesse * temps)
                     / Math.sqrt((dx * dx + dy * dy)));
 
+            if(bee_xpos == GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE && bee_ypos == 0 )
+            {
+                bee_xpos = GamePanel.SCREEN_WIDTH /2;
+                bee_ypos = GamePanel.SCREEN_HEIGHT/2;
+            }
             if (bee_xpos >= GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE || bee_xpos <= 0) {
                 bee_xpos = Math.max(0, Math.min(bee_xpos, GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE));
                 dx = dx * -1;

@@ -25,21 +25,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     // ça me servira de limite pour la lécture de mon fichier map.txt.
     public static final int maxScreenRow = GamePanel.SCREEN_HEIGHT / UNIT_SIZE;
     public static final int maxScreenCol = GamePanel.SCREEN_WIDTH / UNIT_SIZE;
-    private static boolean gameState = true;
-
     // les tuiles : arbres , eau , herbe .... ;
     public DessinTuiles tuiles = new DessinTuiles(this);
-
     /**************************************************************************************/
 
     /* Concernant les sources : */
-    public static final int NUMBER_OF_SOURCES = 10;
+    public static final int NUMBER_OF_SOURCES = 20;
     // public static final int NUMBER_OF_SOURCES =1;
 
-    static public int SOURCES_MAXIMUM_QUANTITY = 4000;
+    static public int SOURCES_MAXIMUM_QUANTITY = 1000;
     static public int SOURCES_MAXIMUM_QUALITY = 10;
     static public Sources[] les_fleurs = new Sources[GamePanel.NUMBER_OF_SOURCES];
-    static public ArrayList<Sources> deadSources = new ArrayList<>();
 
     /**************************************************************************************/
 
@@ -58,8 +54,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     /* LES ABEILLES ET LEUR CREATION */
 
     static public Frelon le_frelon;
-    static public ArrayList<Banana> les_bananes ;
-    static public Bees[] eclaireuses_bees = new Eclaireuse_Bee[30];
+    static public ArrayList<FilsFrelon> les_fils_frelon;
+    static public ArrayList<Banana> les_bananes;
+
+    static public Bees[] eclaireuses_bees = new Eclaireuse_Bee[8];
     static public Bees[] employee_bees = new Employee_bee[GamePanel.NUMBER_OF_SOURCES];
     static public Bees[] observatrice_bees = new Observatrice_bee[(int) (GamePanel.NUMBER_OF_SOURCES / 2)];
     public CreateurDobjets LeCreateur = new CreateurDobjets();
@@ -77,11 +75,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         this.setFocusable(true);
         this.requestFocusInWindow();
 
-
         setGameObjects();
 
         this.addKeyListener(le_frelon);
-
 
         quantite_de_pollen_initial = LeCreateur.quantite_de_pollen();
         timer = new Timer(50, this);
@@ -147,18 +143,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             g.drawString(message, x, y);
         }
 
-
         le_frelon.draw(g2);
 
-        for(Banana b : GamePanel.les_bananes)
-        {
+        for (Banana b : GamePanel.les_bananes) {
             b.draw(g2);
         }
-        // g.setColor(Color.BLUE);
-        // for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
-        // g.drawLine(0, i * UNIT_SIZE, SCREEN_WIDTH, i * UNIT_SIZE);
-        // g.drawLine(UNIT_SIZE * i, 0, UNIT_SIZE * i, SCREEN_HEIGHT);
-        // }
+        for (FilsFrelon ff : les_fils_frelon) {
+            ff.draw(g2);
+        }
     }
 
     @Override
@@ -174,7 +166,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             GamePanel.jeuPause = !GamePanel.jeuPause;
-            GamePanel.gameState = !GamePanel.gameState;
             repaint();
         }
     }
@@ -182,7 +173,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (GamePanel.gameState) {
+        if (!GamePanel.jeuPause) {
             // calcul_pollen();
             update();
 
@@ -202,11 +193,19 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     public static int onetime = 1; // afin de affecter les sources au employées qu'une seule fois ; pas à chaque
                                    // update
     boolean do_it_again = true;
-
     public static ArrayList<Sources> valid_x = new ArrayList<>();
 
     private void update() {
         le_frelon.move();
+        le_frelon.achete();
+
+        if (!les_fils_frelon.isEmpty()) {
+            for (FilsFrelon ff : les_fils_frelon) {
+                ff.bee_move(1, 18);
+                ff.recolter();
+                ff.getHere(10);
+            }
+        }
         if (release_eclaireuses) {
 
             for (Bees ec_bee : eclaireuses_bees) {
@@ -235,7 +234,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             // LA DANSE DES ECLAIREUSES SE PASSES ICI .
             int i = 0;
             if (GamePanel.onetime == 1) {
-                System.out.println("ahahahahah");
                 valid_x.clear();
                 for (int k = 0; k < Bees.infoBoxOfSources.length; k++) {
                     if (Bees.infoBoxOfSources[k] != null) {
@@ -265,10 +263,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             }
 
             for (Bees employee_bee : employee_bees) {
-                // THEFUCK !
-                // you say : for ?.... a.source_to_explore = null ; and then you say this ???
-
-                // System.out.println("what the hell");
                 if (employee_bee.source_to_explore != null) {
                     employee_bee.bee_move(1, 17);
                 }
@@ -286,10 +280,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     if (Bees.infoBoxOfSources[k] != null && Bees.infoBoxOfSources[k].quantity <= 0)
                         Bees.infoBoxOfSources[k] = null;
                 }
-                for (Sources c : Bees.infoBoxOfSources) {
-                    System.out.println(c);
-                    System.out.println("-------------------------------------------------");
-                }
+
+                GamePanel.les_bananes.clear();
             }
         }
 
@@ -332,7 +324,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     ab_ob.bee_move(2, 17);
                 ab_ob.getSourceInformation(les_fleurs);
                 how_much_in_home += ab_ob.exploreVoisinage();
-                // System.out.println("how much in home (ab observa) : " + how_much_in_home);
             }
             if (GamePanel.how_much_in_home == GamePanel.how_much_gone) {
                 do_it_again = true;
@@ -362,10 +353,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         if (quantite_de_pollen_Now <= quantite_de_pollen_initial * 30 / 100) {
             // fin du jeu
 
+            int x = Frelon.munition;
             GamePanel.reinitialiserLeJeu();
             timer.stop();
             ce_frame.dispose();
-            new FinJeu();
+            new FinJeu(x);
         }
     }
 
@@ -421,6 +413,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         release_observatrices = false;
 
         GamePanel.onetime = 1;
+
+        Frelon.munition = 0;
+
+        GamePanel.les_bananes.clear();
+
         for (Bees a : eclaireuses_bees) {
             a.letMove = true;
             a.gotInfoNowWait = false;
@@ -459,16 +456,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         }
 
         Arrays.fill(Bees.infoBoxOfSources, null);
-    }
-
-    public void calcul_pollen() {
-        int somme = 0;
-        for (Sources s : les_fleurs) {
-            if (s != null)
-                somme += (int) s.quantity;
-        }
-
-        System.out.println("somme = " + somme);
     }
 
     public static int remaining_sources() {

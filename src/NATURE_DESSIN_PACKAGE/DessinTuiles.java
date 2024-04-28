@@ -7,6 +7,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Objects;
 
 public class DessinTuiles {
 
@@ -28,22 +29,22 @@ public class DessinTuiles {
     public void getTuilesImages() {
         try {
             tuile[0] = new Tuile();
-            tuile[0].image = ImageIO.read(getClass().getResourceAsStream("/Tuiles/grass01.png"));
+            tuile[0].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/grass01.png")));
 
             tuile[1] = new Tuile();
-            tuile[1].image = ImageIO.read(getClass().getResourceAsStream("/Tuiles/water00.png"));
+            tuile[1].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/water00.png")));
 
             tuile[2] = new Tuile();
-            tuile[2].image = ImageIO.read(getClass().getResourceAsStream("/Tuiles/floor01.png"));
+            tuile[2].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/ruche.png")));
 
             tuile[3] = new Tuile();
-            tuile[3].image = ImageIO.read(getClass().getResourceAsStream("/Tuiles/earth.png"));
+            tuile[3].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/earth.png")));
 
             tuile[4] = new Tuile();
-            tuile[4].image = ImageIO.read(getClass().getResourceAsStream("/Tuiles/tree.png"));
+            tuile[4].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/tree.png")));
 
             tuile[5] = new Tuile();
-            tuile[5].image = ImageIO.read(getClass().getResourceAsStream("/Tuiles/wall.png"));
+            tuile[5].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/wall.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }

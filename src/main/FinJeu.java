@@ -6,13 +6,16 @@ import javax.swing.*;
 
 public class FinJeu extends JFrame implements ActionListener {
 
-    FinJeu() {
+    private int score;
+
+    FinJeu(int score) {
+        this.score = score;
         this.setTitle("THEM BEEEEZ");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
-        panel.setBackground(Color.CYAN);
+        panel.setBackground(Color.GREEN);
         panel.setPreferredSize(new Dimension(GamePanel.SCREEN_WIDTH, GamePanel.SCREEN_HEIGHT));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -20,15 +23,20 @@ public class FinJeu extends JFrame implements ActionListener {
         label_Text.setFont(new Font("Arial", Font.BOLD, 36));
         label_Text.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(label_Text);
+        panel.add(Box.createVerticalStrut(100));
 
-        panel.add(Box.createVerticalStrut(100)); // Add vertical space
+        JLabel scoreLabel = new JLabel("Score: " + score);
+        scoreLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(scoreLabel);
+        panel.add(Box.createVerticalStrut(100));
 
         JLabel pollenStatus = new JLabel("Pollen épuisé");
         pollenStatus.setFont(new Font("Arial", Font.PLAIN, 24));
         pollenStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(pollenStatus);
 
-        panel.add(Box.createVerticalStrut(200)); // Add more vertical space
+        panel.add(Box.createVerticalStrut(100));
 
         JButton jb = new JButton("Rejouer");
         jb.setFocusable(false);
@@ -51,9 +59,5 @@ public class FinJeu extends JFrame implements ActionListener {
                 new GameFrame();
             }
         }
-    }
-
-    public static void main(String[] args) {
-        new FinJeu();
     }
 }
