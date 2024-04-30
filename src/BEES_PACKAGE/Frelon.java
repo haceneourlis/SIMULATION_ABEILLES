@@ -21,7 +21,8 @@ public class Frelon extends Bees implements KeyListener, Voleur {
 
     public static int vie_frelon = 5;
 
-    public static BufferedImage coeur_image ;
+    public static BufferedImage coeur_image;
+
     private Frelon() {
         this.bee_xpos = 25;
         this.bee_ypos = 75;
@@ -116,7 +117,7 @@ public class Frelon extends Bees implements KeyListener, Voleur {
     }
 
     private void provoquer() {
-         GamePanel.les_fils_frelon.add(new FrelonVoleurDeFrelon());
+        GamePanel.les_fils_frelon.add(new FrelonVoleurDeFrelon());
     }
 
     @Override

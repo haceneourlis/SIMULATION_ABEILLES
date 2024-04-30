@@ -34,9 +34,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     /**************************************************************************************/
 
     /* Concernant les sources : */
-    public static final int NUMBER_OF_SOURCES = 25;
+    public static final int NUMBER_OF_SOURCES = 55;
 
-    static public int SOURCES_MAXIMUM_QUANTITY = 8000;
+    static public int SOURCES_MAXIMUM_QUANTITY = 12000;
     static public int SOURCES_MAXIMUM_QUALITY = 10;
     static public Sources[] les_fleurs = new Sources[GamePanel.NUMBER_OF_SOURCES];
 
@@ -248,6 +248,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         release_observatrices = false;
 
         GamePanel.onetime = 1;
+        GamePanel.frelon_mort = false;
 
         Frelon.munition = 0;
 
@@ -343,7 +344,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         if (release_eclaireuses) {
 
             for (Bees ec_bee : eclaireuses_bees) {
-                ec_bee.bee_move(1, 17);
+                ec_bee.bee_move(1, 37);
                 ec_bee.getSourceInformation(les_fleurs);
                 GamePanel.how_much_in_home += ec_bee.getBackHome(17);
             }
@@ -415,7 +416,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                         Bees.infoBoxOfSources[k] = null;
                 }
 
-                GamePanel.les_bananes.clear();
             }
         }
 
@@ -433,7 +433,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     }
                 }
 
-                System.out.println("ZZZZZ\n valid_x.size() = " + valid_x.size());
+                System.out.println("valid_x.size() = " + valid_x.size());
 
                 for (Bees b_observ : observatrice_bees) {
                     b_observ.letMove = true;
@@ -441,6 +441,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     b_observ.goingHome = false;
                     b_observ.information_gotten = false;
                     b_observ.isInHome = false;
+                    b_observ.source_to_explore = null;
 
                     if (how_much_gone < valid_x.size()) {
                         b_observ.source_to_explore = valid_x.get(how_much_gone);
@@ -448,6 +449,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                         how_much_gone++;
                     }
                 }
+
+                System.out.println("\nhow much observatrice gone ?  = " + how_much_gone+"\n------------------\n");
                 do_it_again = false;
             }
 
@@ -457,9 +460,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 ab_ob.getSourceInformation(les_fleurs);
                 how_much_in_home += ab_ob.exploreVoisinage();
             }
+            System.out.println("how much in home ? = " + how_much_in_home);
             if (GamePanel.how_much_in_home == GamePanel.how_much_gone) {
                 do_it_again = true;
                 GamePanel.how_much_in_home = 0;
+
+                GamePanel.les_bananes.clear();
+
 
                 int cmpt = 0;
                 for (int k = 0; k < Bees.infoBoxOfSources.length; k++) {
