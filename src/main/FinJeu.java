@@ -2,14 +2,12 @@ package main;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import javax.swing.*;
 
 public class FinJeu extends JFrame implements ActionListener {
 
-    private int score;
-
     FinJeu(int score) {
-        this.score = score;
         this.setTitle("THEM BEEEEZ");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,7 +54,11 @@ public class FinJeu extends JFrame implements ActionListener {
             JButton button = (JButton) e.getSource();
             if (button.getText().equals("Rejouer")) {
                 this.dispose();
-                new GameFrame();
+                try {
+                    new GameFrame();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
     }

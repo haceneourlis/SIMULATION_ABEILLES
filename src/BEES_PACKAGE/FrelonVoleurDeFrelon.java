@@ -7,17 +7,17 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Objects;
 
-public class FilsFrelon extends Bees implements Ennemies{
+public class FrelonVoleurDeFrelon extends Bees implements Voleur {
 
     static int Id =0;
-    FilsFrelon()
+    FrelonVoleurDeFrelon()
     {
         bee_xpos  = GamePanel.SCREEN_WIDTH / 2 - GamePanel.UNIT_SIZE;
         bee_ypos   = GamePanel.SCREEN_HEIGHT / 2 - GamePanel.UNIT_SIZE ;
         this.bee_id = Id;
         this.letMove = true;
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/FilsFrelon.png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/ff.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,7 +53,7 @@ public class FilsFrelon extends Bees implements Ennemies{
         }
     }
 
-    public void recolter()
+    public void voler()
     {
         for(int i = 0 ; i < GamePanel.les_bananes.size();i++)
         {
@@ -64,7 +64,6 @@ public class FilsFrelon extends Bees implements Ennemies{
             if (this.solidArea.intersects( GamePanel.les_bananes.get(i).solidArea)) {
                 GamePanel.les_bananes.remove(i);
                 i--;
-                Frelon.munition ++;
 
                 this.letMove = false ;
                 this.information_gotten = true ;
@@ -73,7 +72,7 @@ public class FilsFrelon extends Bees implements Ennemies{
     }
 
 
-    public void getHere(int vitesse) {
+    public boolean attaquer(int vitesse) {
         if (this.information_gotten) {
             int target_x_position = GamePanel.le_frelon.bee_xpos;
             int target_y_position = GamePanel.le_frelon.bee_ypos;
@@ -85,11 +84,15 @@ public class FilsFrelon extends Bees implements Ennemies{
             bee_xpos += (int) ((dx * vitesse) / distance);
             bee_ypos += (int) ((dy * vitesse) / distance);
 
-            if (this.bee_ypos == GamePanel.le_frelon.bee_ypos
-                    && this.bee_xpos == GamePanel.le_frelon.bee_xpos) {
-                GamePanel.le_frelon = null;
+            this.solidArea.setLocation(this.bee_xpos, this.bee_ypos);
+            GamePanel.le_frelon.solidArea.setLocation(target_x_position,target_y_position);
+            if(this.solidArea.intersects(GamePanel.le_frelon.solidArea))
+            {
+
+                return true;
             }
         }
+        return false ;
     }
 
 

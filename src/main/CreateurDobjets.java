@@ -61,6 +61,10 @@ public class CreateurDobjets {
                     rand.nextInt(GamePanel.UNIT_SIZE * 7, GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE);
             GamePanel.les_fleurs[j] = new Sources(rand.nextInt(1, GamePanel.SOURCES_MAXIMUM_QUALITY), x, y, j,
                     rand.nextInt(500, GamePanel.SOURCES_MAXIMUM_QUANTITY));
+
+
+
+            GamePanel.qte_initiales_sources[j] = GamePanel.les_fleurs[j].quantity;
         }
 
     }

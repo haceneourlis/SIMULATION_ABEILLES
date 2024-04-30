@@ -1,12 +1,13 @@
 package main;
 
 import javax.swing.*;
+import java.io.IOException;
 
 public class GameFrame extends JFrame {
 
     GamePanel panel;
 
-    GameFrame() {
+    public GameFrame() throws IOException {
         panel = new GamePanel();
         this.add(panel);
         this.setTitle("BEEEEZ");

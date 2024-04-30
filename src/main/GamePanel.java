@@ -4,6 +4,7 @@ import BEES_PACKAGE.*;
 import NATURE_DESSIN_PACKAGE.DessinTuiles;
 import Sources.Sources;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.awt.*;
@@ -11,8 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
@@ -25,15 +28,15 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     // ça me servira de limite pour la lécture de mon fichier map.txt.
     public static final int maxScreenRow = GamePanel.SCREEN_HEIGHT / UNIT_SIZE;
     public static final int maxScreenCol = GamePanel.SCREEN_WIDTH / UNIT_SIZE;
+    private static boolean frelon_mort = false;
     // les tuiles : arbres , eau , herbe .... ;
     public DessinTuiles tuiles = new DessinTuiles(this);
     /**************************************************************************************/
 
     /* Concernant les sources : */
-    public static final int NUMBER_OF_SOURCES = 20;
-    // public static final int NUMBER_OF_SOURCES =1;
+    public static final int NUMBER_OF_SOURCES = 25;
 
-    static public int SOURCES_MAXIMUM_QUANTITY = 1000;
+    static public int SOURCES_MAXIMUM_QUANTITY = 8000;
     static public int SOURCES_MAXIMUM_QUALITY = 10;
     static public Sources[] les_fleurs = new Sources[GamePanel.NUMBER_OF_SOURCES];
 
@@ -54,10 +57,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     /* LES ABEILLES ET LEUR CREATION */
 
     static public Frelon le_frelon;
-    static public ArrayList<FilsFrelon> les_fils_frelon;
+    static public ArrayList<FrelonVoleurDeFrelon> les_fils_frelon;
     static public ArrayList<Banana> les_bananes;
+    static public double[] qte_initiales_sources = new double[NUMBER_OF_SOURCES];
 
-    static public Bees[] eclaireuses_bees = new Eclaireuse_Bee[8];
+    static public Bees[] eclaireuses_bees = new Eclaireuse_Bee[12];
     static public Bees[] employee_bees = new Employee_bee[GamePanel.NUMBER_OF_SOURCES];
     static public Bees[] observatrice_bees = new Observatrice_bee[(int) (GamePanel.NUMBER_OF_SOURCES / 2)];
     public CreateurDobjets LeCreateur = new CreateurDobjets();
@@ -67,7 +71,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     public static boolean jeuPause = false;
 
-    public GamePanel() {
+
+    /** ********************************** CONSTRUCTEUR ***************************************** **/
+    public GamePanel() throws IOException {
 
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 
@@ -83,6 +89,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         timer = new Timer(50, this);
         timer.start();
     }
+    /** *************************************************************************** **/
 
     public void setGameObjects() {
         LeCreateur.set_objects();
@@ -148,39 +155,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         for (Banana b : GamePanel.les_bananes) {
             b.draw(g2);
         }
-        for (FilsFrelon ff : les_fils_frelon) {
+        for (FrelonVoleurDeFrelon ff : les_fils_frelon) {
             ff.draw(g2);
         }
-    }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
 
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
-
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            GamePanel.jeuPause = !GamePanel.jeuPause;
-            repaint();
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-        if (!GamePanel.jeuPause) {
-            // calcul_pollen();
-            update();
-
-            GameFrame frame_parent = (GameFrame) SwingUtilities.getWindowAncestor(this);
-            poullen_finiOuuu(frame_parent);
-
-            repaint();
+        for (int i = 0; i < Frelon.vie_frelon; i++) {
+            g2.drawImage(Frelon.coeur_image,i*GamePanel.UNIT_SIZE ,0 , GamePanel.UNIT_SIZE, GamePanel.UNIT_SIZE, null);
         }
     }
 
@@ -195,17 +176,170 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     boolean do_it_again = true;
     public static ArrayList<Sources> valid_x = new ArrayList<>();
 
-    private void update() {
-        le_frelon.move();
-        le_frelon.achete();
+    public void poullen_finiOuuu(GameFrame ce_frame) {
 
-        if (!les_fils_frelon.isEmpty()) {
-            for (FilsFrelon ff : les_fils_frelon) {
-                ff.bee_move(1, 18);
-                ff.recolter();
-                ff.getHere(10);
+        double quantite_de_pollen_Now = LeCreateur.quantite_de_pollen();
+
+        if (quantite_de_pollen_Now <= quantite_de_pollen_initial * 30 / 100) {
+            // fin du jeu
+
+            int x = Frelon.munition;
+            fin_du_jeu(x,ce_frame);
+        }
+    }
+
+    private void fin_du_jeu(int x , GameFrame ce_frame)
+    {
+        GamePanel.reinitialiserLeJeu();
+        timer.stop();
+        ce_frame.dispose();
+        new FinJeu(x);
+    }
+
+    private static void searchNewResources() {
+        how_much_in_home = 0;
+
+        release_eclaireuses = true;
+        release_employees = false;
+        release_observatrices = false;
+        GamePanel.onetime = 1;
+
+        for (Bees a : eclaireuses_bees) {
+            a.letMove = true;
+            a.gotInfoNowWait = false;
+            a.goingHome = false;
+            a.information_gotten = false;
+            a.isInHome = false;
+            a.dx = 5;
+            a.dy = 5;
+        }
+        for (Bees a : employee_bees) {
+            a.letMove = true;
+            a.gotInfoNowWait = false;
+            a.goingHome = false;
+            a.information_gotten = false;
+            a.isInHome = false;
+            a.dx = 5;
+            a.dy = 5;
+
+            if (a.source_to_explore != null && a.source_to_explore.quantity < 0) {
+                a.source_to_explore = null;
             }
         }
+        for (Bees a : observatrice_bees) {
+            a.letMove = true;
+            a.gotInfoNowWait = false;
+            a.goingHome = false;
+            a.information_gotten = false;
+            a.isInHome = false;
+            a.source_to_explore = null;
+            a.dx = 1;
+            a.dy = 1;
+        }
+
+        Arrays.fill(Bees.infoBoxOfSources, null);
+    }
+
+    private static void reinitialiserLeJeu() {
+        how_much_in_home = 0;
+
+        release_eclaireuses = true;
+        release_employees = false;
+        release_observatrices = false;
+
+        GamePanel.onetime = 1;
+
+        Frelon.munition = 0;
+
+        GamePanel.les_bananes.clear();
+        GamePanel.les_fils_frelon.clear();
+
+        for (Bees a : eclaireuses_bees) {
+            a.letMove = true;
+            a.gotInfoNowWait = false;
+            a.goingHome = false;
+            a.information_gotten = false;
+            a.isInHome = false;
+
+            a.dx = 1;
+            a.dy = 1;
+        }
+        for (Bees a : employee_bees) {
+            a.letMove = true;
+            a.gotInfoNowWait = false;
+            a.goingHome = false;
+            a.information_gotten = false;
+            a.isInHome = false;
+            a.source_to_explore = null;
+
+            a.dx = 1;
+            a.dy = 1;
+        }
+        for (Bees a : observatrice_bees) {
+            a.letMove = true;
+            a.gotInfoNowWait = false;
+            a.goingHome = false;
+            a.information_gotten = false;
+            a.isInHome = false;
+            a.source_to_explore = null;
+            a.dx = 1;
+            a.dy = 1;
+        }
+
+        for (Sources c : les_fleurs) {
+            if (c != null)
+                c.surMoi.clear();
+        }
+
+        Arrays.fill(Bees.infoBoxOfSources, null);
+    }
+
+    public static int remaining_sources() {
+        int somme = 0;
+        for (Sources c : les_fleurs) {
+            if (c != null) {
+                somme += 1;
+            }
+        }
+        return somme;
+    }
+
+    private void update() {
+
+        if(GamePanel.le_frelon != null) {
+            le_frelon.move();
+        }
+
+        for(int i = 0 ; i < GamePanel.les_fleurs.length;i++)
+        {
+            if(GamePanel.les_fleurs[i] != null && GamePanel.les_fleurs[i].quantity <= ((double) 30 /100) * GamePanel.qte_initiales_sources[i] )
+            {
+                try {
+                    GamePanel.les_fleurs[i].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Sources/flower_morte.png")));
+                }catch(IOException e)
+                {
+                    throw new IllegalArgumentException("Accés à l'image impossible pour la source : " + GamePanel.les_fleurs[i].source_id, e);
+                }
+            }
+        }
+
+
+        for (int i = 0 ; i < GamePanel.les_fils_frelon.size();i++) {
+            GamePanel.les_fils_frelon.get(i).bee_move(1, 18);
+            GamePanel.les_fils_frelon.get(i).voler();
+            if(GamePanel.les_fils_frelon.get(i).attaquer(10))
+            {
+                GamePanel.les_fils_frelon.remove(i);
+                i--;
+
+                Frelon.vie_frelon--;
+                if(Frelon.vie_frelon <= 0)
+                {
+                    GamePanel.frelon_mort = true ;
+                }
+            }
+        }
+
         if (release_eclaireuses) {
 
             for (Bees ec_bee : eclaireuses_bees) {
@@ -313,9 +447,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                         b_observ.source_to_explore.surMoi.clear();
                         how_much_gone++;
                     }
-
                 }
-
                 do_it_again = false;
             }
 
@@ -346,125 +478,41 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     }
 
-    public void poullen_finiOuuu(GameFrame ce_frame) {
 
-        double quantite_de_pollen_Now = LeCreateur.quantite_de_pollen();
 
-        if (quantite_de_pollen_Now <= quantite_de_pollen_initial * 30 / 100) {
-            // fin du jeu
+    @Override
+    public void keyTyped(KeyEvent e) {
 
-            int x = Frelon.munition;
-            GamePanel.reinitialiserLeJeu();
-            timer.stop();
-            ce_frame.dispose();
-            new FinJeu(x);
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            GamePanel.jeuPause = !GamePanel.jeuPause;
+            repaint();
         }
     }
 
-    private static void searchNewResources() {
-        how_much_in_home = 0;
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-        release_eclaireuses = true;
-        release_employees = false;
-        release_observatrices = false;
-        GamePanel.onetime = 1;
+        if (!GamePanel.jeuPause) {
+            // calcul_pollen();
+            update();
 
-        for (Bees a : eclaireuses_bees) {
-            a.letMove = true;
-            a.gotInfoNowWait = false;
-            a.goingHome = false;
-            a.information_gotten = false;
-            a.isInHome = false;
-            a.dx = 5;
-            a.dy = 5;
-        }
-        for (Bees a : employee_bees) {
-            a.letMove = true;
-            a.gotInfoNowWait = false;
-            a.goingHome = false;
-            a.information_gotten = false;
-            a.isInHome = false;
-            a.dx = 5;
-            a.dy = 5;
+            GameFrame frame_parent = (GameFrame) SwingUtilities.getWindowAncestor(this);
+            poullen_finiOuuu(frame_parent);
 
-            if (a.source_to_explore != null && a.source_to_explore.quantity < 0) {
-                a.source_to_explore = null;
+            if(GamePanel.frelon_mort)
+            {
+                fin_du_jeu(Frelon.munition,frame_parent);
             }
+
+            repaint();
         }
-        for (Bees a : observatrice_bees) {
-            a.letMove = true;
-            a.gotInfoNowWait = false;
-            a.goingHome = false;
-            a.information_gotten = false;
-            a.isInHome = false;
-            a.source_to_explore = null;
-            a.dx = 1;
-            a.dy = 1;
-        }
-
-        Arrays.fill(Bees.infoBoxOfSources, null);
-    }
-
-    private static void reinitialiserLeJeu() {
-        how_much_in_home = 0;
-
-        release_eclaireuses = true;
-        release_employees = false;
-        release_observatrices = false;
-
-        GamePanel.onetime = 1;
-
-        Frelon.munition = 0;
-
-        GamePanel.les_bananes.clear();
-
-        for (Bees a : eclaireuses_bees) {
-            a.letMove = true;
-            a.gotInfoNowWait = false;
-            a.goingHome = false;
-            a.information_gotten = false;
-            a.isInHome = false;
-
-            a.dx = 1;
-            a.dy = 1;
-        }
-        for (Bees a : employee_bees) {
-            a.letMove = true;
-            a.gotInfoNowWait = false;
-            a.goingHome = false;
-            a.information_gotten = false;
-            a.isInHome = false;
-            a.source_to_explore = null;
-
-            a.dx = 1;
-            a.dy = 1;
-        }
-        for (Bees a : observatrice_bees) {
-            a.letMove = true;
-            a.gotInfoNowWait = false;
-            a.goingHome = false;
-            a.information_gotten = false;
-            a.isInHome = false;
-            a.source_to_explore = null;
-            a.dx = 1;
-            a.dy = 1;
-        }
-
-        for (Sources c : les_fleurs) {
-            if (c != null)
-                c.surMoi.clear();
-        }
-
-        Arrays.fill(Bees.infoBoxOfSources, null);
-    }
-
-    public static int remaining_sources() {
-        int somme = 0;
-        for (Sources c : les_fleurs) {
-            if (c != null) {
-                somme += 1;
-            }
-        }
-        return somme;
     }
 }

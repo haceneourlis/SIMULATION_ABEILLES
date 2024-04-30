@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Sources extends Rectangle {
 
@@ -32,14 +33,11 @@ public class Sources extends Rectangle {
         solidArea.x += source_xpos;
         solidArea.y += source_ypos;
     }
-    public Sources(int quality, int source_xpos, int source_ypos, int source_id, double quantity)
-    {
-        try{
-            image = ImageIO.read(getClass().getResourceAsStream("/Sources/flower.png"));
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
+    public Sources(int quality, int source_xpos, int source_ypos, int source_id, double quantity) throws IllegalArgumentException {
+        try {
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Sources/flower.png")));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Accés à l'image impossible pour la source : " + source_id, e);
         }
         this.quality = quality;
         this.source_id = source_id;
@@ -49,8 +47,7 @@ public class Sources extends Rectangle {
         solidArea.y += source_ypos;
 
         this.quantity = quantity;
-        surMoi = new ArrayList<Bees>();
-
+        surMoi = new ArrayList<>();
     }
 
 

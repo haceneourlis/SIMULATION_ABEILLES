@@ -4,6 +4,7 @@ import main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class DessinTuiles {
     Tuile[] tuile;
     public static int[][] matrice_de_dessin;
 
-    public DessinTuiles(GamePanel gp) {
+    public DessinTuiles(GamePanel gp) throws IOException {
         this.gp = gp;
         tuile = new Tuile[10];
 
@@ -26,32 +27,28 @@ public class DessinTuiles {
         lire_matrice_de_dessin();
     }
 
-    public void getTuilesImages() {
+    public void getTuilesImages() throws IOException {
         try {
-            tuile[0] = new Tuile();
-            tuile[0].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/grass01.png")));
-
-            tuile[1] = new Tuile();
-            tuile[1].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/water00.png")));
-
-            tuile[2] = new Tuile();
-            tuile[2].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/ruche.png")));
-
-            tuile[3] = new Tuile();
-            tuile[3].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/earth.png")));
-
-            tuile[4] = new Tuile();
-            tuile[4].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/tree.png")));
-
-            tuile[5] = new Tuile();
-            tuile[5].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/wall.png")));
+            tuile[0] = getImage("/Tuiles/grass01.png");
+            tuile[1] = getImage("/Tuiles/water00.png");
+            tuile[2] = getImage("/Tuiles/r.png");
+            tuile[3] = getImage("/Tuiles/earth.png");
+            tuile[4] = getImage("/Tuiles/tree.png");
+            tuile[5] = getImage("/Tuiles/wall.png");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IOException("impossible de getter les images des tuiles", e);
         }
     }
 
-    // quelle bonne idée monsieur jean-luc !
-    public void lire_matrice_de_dessin() {
+    private Tuile getImage(String path) throws IOException {
+        BufferedImage image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(path)));
+        if (image == null) {
+            throw new IllegalArgumentException("getting image is impossible pour l'image : " + path);
+        }
+        return new Tuile(image);
+    }
+
+    private void lire_matrice_de_dessin() throws IOException {
         String filePath = "src/NATURE_DESSIN_PACKAGE/map.txt";
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -60,18 +57,17 @@ public class DessinTuiles {
             while ((line = br.readLine()) != null && row < GamePanel.maxScreenRow) {
                 String[] values = line.trim().split("\\s+");
 
-                for (int col = 0; col < values.length && col < GamePanel.SCREEN_HEIGHT; col++) {
+                for (int col = 0; col < values.length && col < GamePanel.maxScreenCol; col++) {
                     matrice_de_dessin[row][col] = Integer.parseInt(values[col]);
                 }
                 row++;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IOException("impossible de lire le fichier : map.txt ", e);
         }
     }
 
     public void draw(Graphics g) {
-
         int x = 0;
         int y = 0;
         int row = 0;
