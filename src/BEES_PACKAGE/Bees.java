@@ -16,11 +16,11 @@ public abstract class Bees {
     public boolean isInHome = false;
     public int bee_id;
     public boolean information_gotten = false;
-    public Rectangle solidArea = new Rectangle(0, 0, GamePanel.UNIT_SIZE, GamePanel.UNIT_SIZE); // pour m'aider à
+    public Rectangle solidArea = new Rectangle(0, 0, GamePanel.TAILLE_CELLULE, GamePanel.TAILLE_CELLULE); // pour m'aider à
     // détecter les
     // collisions .
 
-    static public Sources[] infoBoxOfSources = new Sources[GamePanel.NUMBER_OF_SOURCES];
+    static public Sources[] infoBoxOfSources = new Sources[GamePanel.NOMBRE_DE_SOURCES];
     public boolean letMove = true;
     public int stop_Labeille = 0;
     public boolean gotInfoNowWait = false;
@@ -33,7 +33,7 @@ public abstract class Bees {
     public abstract void getSourceInformation(Sources[] src);
 
     public void draw(Graphics2D g2) {
-        g2.drawImage(this.image, bee_xpos, bee_ypos, GamePanel.UNIT_SIZE, GamePanel.UNIT_SIZE, null);
+        g2.drawImage(this.image, bee_xpos, bee_ypos, GamePanel.TAILLE_CELLULE, GamePanel.TAILLE_CELLULE, null);
     }
 
     public void bee_move(int temps, int vitesse) {
@@ -86,8 +86,8 @@ public abstract class Bees {
             if (compteur_retour_ruche >= X_directions.length) {
                 return this.getBackHome(50);
             } else {
-                bee_xpos += GamePanel.UNIT_SIZE * X_directions[compteur_retour_ruche];
-                bee_ypos += GamePanel.UNIT_SIZE * Y_directions[compteur_retour_ruche];
+                bee_xpos += GamePanel.TAILLE_CELLULE * X_directions[compteur_retour_ruche];
+                bee_ypos += GamePanel.TAILLE_CELLULE * Y_directions[compteur_retour_ruche];
                 compteur_retour_ruche++;
             }
         }
@@ -100,8 +100,8 @@ public abstract class Bees {
 
             this.goingHome = true;
 
-            int target_x_position = GamePanel.POSITION_X_DE_LA_RUCHE + GamePanel.UNIT_SIZE * 2;
-            int target_y_position = GamePanel.POSITION_Y_DE_LA_RUCHE - GamePanel.UNIT_SIZE * 3;
+            int target_x_position = GamePanel.POSITION_X_DE_LA_RUCHE + GamePanel.TAILLE_CELLULE * 2;
+            int target_y_position = GamePanel.POSITION_Y_DE_LA_RUCHE - GamePanel.TAILLE_CELLULE * 3;
 
             this.dx = target_x_position - this.bee_xpos;
             this.dy = target_y_position - this.bee_ypos;

@@ -7,14 +7,14 @@ import javax.swing.*;
 
 public class FinJeu extends JFrame implements ActionListener {
 
-    FinJeu(int score) {
+    FinJeu(int score, String message) {
         this.setTitle("THEM BEEEEZ");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
         panel.setBackground(Color.GREEN);
-        panel.setPreferredSize(new Dimension(GamePanel.SCREEN_WIDTH, GamePanel.SCREEN_HEIGHT));
+        panel.setPreferredSize(new Dimension(GamePanel.LARGEUR_ECRAN, GamePanel.HAUTEUR_ECRAN));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JLabel label_Text = new JLabel("GAME OVER");
@@ -29,10 +29,10 @@ public class FinJeu extends JFrame implements ActionListener {
         panel.add(scoreLabel);
         panel.add(Box.createVerticalStrut(100));
 
-        JLabel pollenStatus = new JLabel("Pollen épuisé");
-        pollenStatus.setFont(new Font("Arial", Font.PLAIN, 24));
-        pollenStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(pollenStatus);
+        JLabel message_findujeu = new JLabel(message);
+        message_findujeu.setFont(new Font("Arial", Font.PLAIN, 24));
+        message_findujeu.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(message_findujeu);
 
         panel.add(Box.createVerticalStrut(100));
 

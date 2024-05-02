@@ -12,8 +12,8 @@ public class FrelonVoleurDeFrelon extends Bees implements Voleur {
     static int Id =0;
     FrelonVoleurDeFrelon()
     {
-        bee_xpos  = GamePanel.SCREEN_WIDTH / 2 - GamePanel.UNIT_SIZE;
-        bee_ypos   = GamePanel.SCREEN_HEIGHT / 2 - GamePanel.UNIT_SIZE ;
+        bee_xpos  = GamePanel.TAILLE_CELLULE * 16;
+        bee_ypos   = 4 * GamePanel.TAILLE_CELLULE;
         this.bee_id = Id;
         this.letMove = true;
         try {
@@ -32,18 +32,18 @@ public class FrelonVoleurDeFrelon extends Bees implements Voleur {
             bee_ypos += (int) ((dy * vitesse * temps)
                     / Math.sqrt((dx * dx + dy * dy)));
 
-            if(bee_xpos == GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE && bee_ypos == 0 )
+            if(bee_xpos == GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE && bee_ypos == 0 )
             {
-                bee_xpos = GamePanel.SCREEN_WIDTH /2;
-                bee_ypos = GamePanel.SCREEN_HEIGHT/2;
+                bee_xpos = GamePanel.LARGEUR_ECRAN /2;
+                bee_ypos = GamePanel.HAUTEUR_ECRAN /2;
             }
-            if (bee_xpos >= GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE || bee_xpos <= 0) {
-                bee_xpos = Math.max(0, Math.min(bee_xpos, GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE));
+            if (bee_xpos >= GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE || bee_xpos <= 0) {
+                bee_xpos = Math.max(0, Math.min(bee_xpos, GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE));
                 dx = dx * -1;
                 dy = 1;
             }
-            if (bee_ypos >= GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE || bee_ypos <= 0) {
-                bee_ypos = Math.max(0, Math.min(bee_ypos, GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE));
+            if (bee_ypos >= GamePanel.HAUTEUR_ECRAN - GamePanel.TAILLE_CELLULE || bee_ypos <= 0) {
+                bee_ypos = Math.max(0, Math.min(bee_ypos, GamePanel.HAUTEUR_ECRAN - GamePanel.TAILLE_CELLULE));
                 dx = 1;
                 dy = dy * -1;
             } else {

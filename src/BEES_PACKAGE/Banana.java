@@ -7,9 +7,8 @@ import java.io.IOException;
 
 public class Banana extends Sources {
 
-    Banana(int banana_id, int x , int y )
-    {
-        super(banana_id,x,y);
+    Banana(int banana_id, int x, int y) {
+        super(banana_id, x, y);
 
         try {
             this.image = ImageIO.read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/banana.PNG"));

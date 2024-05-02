@@ -56,18 +56,17 @@ public class Eclaireuse_Bee extends Bees {
             bee_ypos += (int) ((dy * vitesse * temps)
                     / Math.sqrt((dx * dx + dy * dy)));
 
-            if(bee_xpos == GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE && bee_ypos == 0 )
-            {
-                bee_xpos = GamePanel.SCREEN_WIDTH /2;
-                bee_ypos = GamePanel.SCREEN_HEIGHT/2;
+            if (bee_xpos == GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE && bee_ypos == 0) {
+                bee_xpos = GamePanel.LARGEUR_ECRAN / 2;
+                bee_ypos = GamePanel.HAUTEUR_ECRAN / 2;
             }
-            if (bee_xpos >= GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE || bee_xpos <= 0) {
-                bee_xpos = Math.max(0, Math.min(bee_xpos, GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE));
+            if (bee_xpos >= GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE || bee_xpos <= 0) {
+                bee_xpos = Math.max(0, Math.min(bee_xpos, GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE));
                 dx = dx * -1;
                 dy = 1;
             }
-            if (bee_ypos >= GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE || bee_ypos <= 0) {
-                bee_ypos = Math.max(0, Math.min(bee_ypos, GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE));
+            if (bee_ypos >= GamePanel.HAUTEUR_ECRAN - GamePanel.TAILLE_CELLULE || bee_ypos <= 0) {
+                bee_ypos = Math.max(0, Math.min(bee_ypos, GamePanel.HAUTEUR_ECRAN - GamePanel.TAILLE_CELLULE));
                 dx = 1;
                 dy = dy * -1;
             } else {
@@ -91,7 +90,7 @@ public class Eclaireuse_Bee extends Bees {
                         if (Bees.infoBoxOfSources[source_decouverte.source_id] == null) {
                             Bees.infoBoxOfSources[source_decouverte.source_id] = source_decouverte;
                         }
-                        abeille_suce_et_attend(70,0.99);
+                        abeille_suce_et_attend(70, 0.99);
                         source_decouverte.reduceQuantityBy(0.99);
                     }
                 }

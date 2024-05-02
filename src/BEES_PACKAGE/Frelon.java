@@ -23,7 +23,7 @@ public class Frelon extends Bees implements KeyListener, Voleur {
 
     public static BufferedImage coeur_image;
 
-    private Frelon() {
+    private Frelon()throws IllegalArgumentException {
         this.bee_xpos = 25;
         this.bee_ypos = 75;
         try {
@@ -31,9 +31,8 @@ public class Frelon extends Bees implements KeyListener, Voleur {
                     .read(Objects.requireNonNull(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/f.png")));
             Frelon.coeur_image = ImageIO
                     .read(Objects.requireNonNull(getClass().getResourceAsStream("/Tuiles/coeur.png")));
-
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("Accés à l'image Frelon impossible  path =  /BEES_PACKAGE/ImagesAbeilles/f.png  " , e);
         }
 
     }
@@ -47,16 +46,16 @@ public class Frelon extends Bees implements KeyListener, Voleur {
 
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            unPasY = -1 * GamePanel.UNIT_SIZE;
+            unPasY = -1 * GamePanel.TAILLE_CELLULE;
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            unPasY = GamePanel.UNIT_SIZE;
+            unPasY = GamePanel.TAILLE_CELLULE;
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            unPasX = GamePanel.UNIT_SIZE;
+            unPasX = GamePanel.TAILLE_CELLULE;
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            unPasX = -1 * GamePanel.UNIT_SIZE;
+            unPasX = -1 * GamePanel.TAILLE_CELLULE;
         }
     }
 
@@ -79,18 +78,18 @@ public class Frelon extends Bees implements KeyListener, Voleur {
         this.bee_xpos += unPasX;
         this.bee_ypos += unPasY;
         if (this.bee_xpos <= 0) {
-            this.bee_xpos = GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE;
+            this.bee_xpos = GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE;
         }
 
-        if (this.bee_xpos > GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE) {
+        if (this.bee_xpos > GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE) {
             this.bee_xpos = 0;
         }
 
         if (this.bee_ypos <= 0) {
-            this.bee_ypos = GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE;
+            this.bee_ypos = GamePanel.HAUTEUR_ECRAN - GamePanel.TAILLE_CELLULE;
         }
 
-        if (this.bee_ypos >= GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE) {
+        if (this.bee_ypos >= GamePanel.HAUTEUR_ECRAN - GamePanel.TAILLE_CELLULE) {
             this.bee_ypos = 0;
         }
         voler();

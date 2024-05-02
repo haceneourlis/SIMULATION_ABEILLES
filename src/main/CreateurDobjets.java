@@ -26,10 +26,10 @@ public class CreateurDobjets {
             GamePanel.eclaireuses_bees[k] = new Eclaireuse_Bee();
             GamePanel.eclaireuses_bees[k].bee_xpos =
                     // 30 * GamePanel.UNIT_SIZE;
-                    rand.nextInt(31, 37) * GamePanel.UNIT_SIZE;
+                    rand.nextInt(31, 37) * GamePanel.TAILLE_CELLULE;
             GamePanel.eclaireuses_bees[k].bee_ypos =
                     // 10 * GamePanel.UNIT_SIZE;
-                    rand.nextInt(0, 6) * GamePanel.UNIT_SIZE;
+                    rand.nextInt(0, 6) * GamePanel.TAILLE_CELLULE;
 
             GamePanel.eclaireuses_bees[k].bee_id = k;
         }
@@ -37,15 +37,15 @@ public class CreateurDobjets {
         // employees.
         for (int l = 0; l < GamePanel.employee_bees.length; l++) {
             GamePanel.employee_bees[l] = new Employee_bee();
-            GamePanel.employee_bees[l].bee_xpos = rand.nextInt(31, 37) * GamePanel.UNIT_SIZE;
-            GamePanel.employee_bees[l].bee_ypos = rand.nextInt(0, 6) * GamePanel.UNIT_SIZE;
+            GamePanel.employee_bees[l].bee_xpos = rand.nextInt(31, 37) * GamePanel.TAILLE_CELLULE;
+            GamePanel.employee_bees[l].bee_ypos = rand.nextInt(0, 6) * GamePanel.TAILLE_CELLULE;
             GamePanel.employee_bees[l].bee_id = l;
         }
 
         for (int o = 0; o < GamePanel.observatrice_bees.length; o++) {
             GamePanel.observatrice_bees[o] = new Observatrice_bee();
-            GamePanel.observatrice_bees[o].bee_xpos = rand.nextInt(31, 37) * GamePanel.UNIT_SIZE;
-            GamePanel.observatrice_bees[o].bee_ypos = rand.nextInt(0, 6) * GamePanel.UNIT_SIZE;
+            GamePanel.observatrice_bees[o].bee_xpos = rand.nextInt(31, 37) * GamePanel.TAILLE_CELLULE;
+            GamePanel.observatrice_bees[o].bee_ypos = rand.nextInt(0, 6) * GamePanel.TAILLE_CELLULE;
             GamePanel.observatrice_bees[o].bee_id = o;
         }
 
@@ -55,16 +55,16 @@ public class CreateurDobjets {
             int y;
             x =
                     // 30 * GamePanel.UNIT_SIZE;
-                    rand.nextInt(GamePanel.UNIT_SIZE * 7, GamePanel.SCREEN_WIDTH - GamePanel.UNIT_SIZE);
+                    rand.nextInt(GamePanel.TAILLE_CELLULE * 7, GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE);
             y =
                     // 10 * GamePanel.UNIT_SIZE;
-                    rand.nextInt(GamePanel.UNIT_SIZE * 7, GamePanel.SCREEN_HEIGHT - GamePanel.UNIT_SIZE);
-            GamePanel.les_fleurs[j] = new Sources(rand.nextInt(1, GamePanel.SOURCES_MAXIMUM_QUALITY), x, y, j,
-                    rand.nextInt(500, GamePanel.SOURCES_MAXIMUM_QUANTITY));
+                    rand.nextInt(GamePanel.TAILLE_CELLULE * 7, GamePanel.HAUTEUR_ECRAN - GamePanel.TAILLE_CELLULE);
+            GamePanel.les_fleurs[j] = new Sources(rand.nextInt(1, GamePanel.MAX_QUALITE_pour_SOURCE), x, y, j,
+                    rand.nextInt(500, GamePanel.MAX_QUANTITE_pour_SOURCE));
 
 
 
-            GamePanel.qte_initiales_sources[j] = GamePanel.les_fleurs[j].quantity;
+            GamePanel.qte_initiales_sources[j] = GamePanel.les_fleurs[j].source_quantite;
         }
 
     }
@@ -73,7 +73,7 @@ public class CreateurDobjets {
         double somme = 0;
         for (int j = 0; j < GamePanel.les_fleurs.length; j++) {
             if (GamePanel.les_fleurs[j] != null)
-                somme += GamePanel.les_fleurs[j].quantity;
+                somme += GamePanel.les_fleurs[j].source_quantite;
         }
         return somme;
     }
