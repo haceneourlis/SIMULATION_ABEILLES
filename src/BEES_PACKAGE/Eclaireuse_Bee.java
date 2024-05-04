@@ -1,9 +1,15 @@
 package BEES_PACKAGE;
 
-import main.GamePanel;
+//import graphs.Graph;
+//import graphs.Graph;
+//import java.util.ArrayList;
+//import java.util.Collections;
+//import java.util.List;
 
+import main.GamePanel;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.Objects;
 import Sources.Sources;
 
 public class Eclaireuse_Bee extends Bees {
@@ -11,7 +17,7 @@ public class Eclaireuse_Bee extends Bees {
     public Eclaireuse_Bee() {
         super();
         try {
-            this.image = ImageIO.read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ.png"));
+            this.image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -23,7 +29,7 @@ public class Eclaireuse_Bee extends Bees {
             if (dx > 1 && dy == 0) {
                 try {
                     this.image = ImageIO
-                            .read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ-REV.png"));
+                            .read(Objects.requireNonNull(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ-REV.png")));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -31,7 +37,7 @@ public class Eclaireuse_Bee extends Bees {
             if (dy > 1 && dx == 0) {
                 try {
                     this.image = ImageIO
-                            .read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ_ROTATION_Y.png"));
+                            .read(Objects.requireNonNull(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ_ROTATION_Y.png")));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -39,14 +45,14 @@ public class Eclaireuse_Bee extends Bees {
             if (dy < 1 && dx == 0) {
                 try {
                     this.image = ImageIO
-                            .read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ_ROTATE_X.png"));
+                            .read(Objects.requireNonNull(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ_ROTATE_X.png")));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             if (dx < 1 && dy == 0) {
                 try {
-                    this.image = ImageIO.read(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ.png"));
+                    this.image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/BEES_PACKAGE/ImagesAbeilles/BEEZ.png")));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -91,7 +97,7 @@ public class Eclaireuse_Bee extends Bees {
                             Bees.infoBoxOfSources[source_decouverte.source_id] = source_decouverte;
                         }
                         abeille_suce_et_attend(70, 0.99);
-                        source_decouverte.reduceQuantityBy(0.99);
+                        source_decouverte.reduireQuantite(0.99);
                     }
                 }
                 source_decouverte.solidArea.x = 0;
@@ -102,3 +108,27 @@ public class Eclaireuse_Bee extends Bees {
         this.solidArea.y = 0;
     }
 }
+
+//    public ArrayList<?> tirerAleatoirementUnParcours(Graph gr)
+//    {
+//        List<Integer> sommets = new ArrayList<>();
+//        for(int j = 0 ; j < gr.nb_sommets;j++)
+//        {
+//            sommets.add(j);
+//        }
+//
+//        // sommet de départ .
+//        parcours_abeille.add(0);
+//
+//        Collections.shuffle(sommets,rand);
+//
+//        for(Integer i : sommets)
+//        {
+//            if(i != 0)
+//            {
+//                parcours_abeille.add(i);
+//            }
+//        }
+//
+//        return (ArrayList<?>) parcours_abeille;
+//    }

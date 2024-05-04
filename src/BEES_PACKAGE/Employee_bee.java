@@ -34,7 +34,7 @@ public class Employee_bee extends Bees {
 
                             if (quality_now >= prev_quality) {
 
-                                src[i].reduceQuantityBy(1.99);
+                                src[i].reduireQuantite(1.99);
 
                                 source_to_explore = src[i];
                                 if (!source_to_explore.surMoi.contains(this))

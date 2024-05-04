@@ -49,12 +49,8 @@ public class Sources extends Rectangle {
         this.source_quantite = quantity;
         surMoi = new ArrayList<>();
     }
-
-    public void reduceQualityby(int quality) {
-        this.source_quantite = this.source_qualite - quality;
-    }
-
-    public void reduceQuantityBy(double quantity) {
+    
+    public void reduireQuantite(double quantity) {
         // if(this.quantity>0)
         this.source_quantite -= quantity;
     }

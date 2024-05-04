@@ -47,7 +47,7 @@ public class DessinTuiles {
             tuile[15] = getImage("/Tuiles/eau_terre_droite.png");
             tuile[16] = getImage("/Tuiles/eau_terre_gauche.png");
         } catch (IOException e) {
-            throw new IOException("impossible de getter les images des tuiles", e);
+            throw new IOException("impossible de charger les images des tuiles", e);
         }
     }
 

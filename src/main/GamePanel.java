@@ -3,6 +3,7 @@ package main;
 import BEES_PACKAGE.*;
 import NATURE_DESSIN_PACKAGE.DessinTuiles;
 import Sources.Sources;
+import graphs.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -20,7 +21,7 @@ import java.util.Random;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
-    // variables concernant le GUI , screen ...
+    // variables concernant le GUI , Ecran ...
     public static final int LARGEUR_ECRAN = 950;
     public static final int HAUTEUR_ECRAN = 750;
     public static final int TAILLE_CELLULE = 25;
@@ -34,8 +35,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     /**************************************************************************************/
 
     /* Concernant les sources : */
-    public static final int NOMBRE_DE_SOURCES = 10;
-
+    public static final int NOMBRE_DE_SOURCES = 25;
     static public int MAX_QUANTITE_pour_SOURCE = 12000;
     static public int MAX_QUALITE_pour_SOURCE = 10;
     static public Sources[] les_fleurs = new Sources[GamePanel.NOMBRE_DE_SOURCES];
@@ -45,16 +45,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     /* la ruche : */
     public static final int POSITION_X_DE_LA_RUCHE = GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE * 4; // 850
     public static final int POSITION_Y_DE_LA_RUCHE = GamePanel.HAUTEUR_ECRAN - GamePanel.TAILLE_CELLULE * 26; // 100
-    // static final int GAME_UNITS =
-    // (LARGEUR_ECRAN*SCREEN_HEIGHT)/(UNIT_SIZE*UNIT_SIZE);
 
     /**************************************************************************************/
     Image image;
     Graphics graphics;
-    Random random = new Random();
     /**************************************************************************************/
 
-    /* LES ABEILLES ET LEUR CREATION */
+    /* LES ABEILLES  */
 
     static public Frelon le_frelon;
     static public ArrayList<FrelonVoleurDeFrelon> les_fils_frelon;
@@ -254,6 +251,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         GamePanel.onetime = 1;
         GamePanel.frelon_mort = false;
 
+        Frelon.vie_frelon = 5;
         Frelon.munition = 0;
 
         GamePanel.les_bananes.clear();
@@ -434,7 +432,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     }
                 }
 
-                System.out.println("valid_x.size() = " + valid_x.size());
+                //System.out.println("valid_x.size() = " + valid_x.size());
 
                 for (Bees b_observ : observatrice_bees) {
                     b_observ.letMove = true;
@@ -451,7 +449,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     }
                 }
 
-                System.out.println("\nhow much observatrice gone ?  = " + how_much_gone + "\n------------------\n");
+                //System.out.println("\nhow much observatrice gone ?  = " + how_much_gone + "\n------------------\n");
                 do_it_again = false;
             }
 
@@ -520,3 +518,26 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         }
     }
 }
+
+
+//    // bonus ...
+// imlements Runnable ;
+//    ArrayList<ArrayList<?>> listDesParcours = new ArrayList<>();
+//
+//    int V = 5; // Nombre de sommets
+//    Graph graphe = new Graph(V);
+//    graphe.ajouterArete(0, 1, 4);
+//    graphe.ajouterArete(0, 2, 5);
+//    graphe.ajouterArete(0, 3, 9);
+//
+//    graphe.ajouterArete(1, 2, 3);
+//    graphe.ajouterArete(1, 3, 2);
+//    graphe.ajouterArete(2, 3, 1);
+//
+//    public void run()
+//    {
+//        for(Bees b : eclaireuses_bees)
+//        {
+//            listDesParcours.add(((Eclaireuse_Bee) b).tirerAleatoirementUnParcours(graphe));
+//        }
+//    }

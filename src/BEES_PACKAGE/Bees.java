@@ -1,8 +1,10 @@
 package BEES_PACKAGE;
+//import graphs.Graph;
+//import java.util.ArrayList;
+//import java.util.List;
 
 import Sources.Sources;
 import main.GamePanel;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
@@ -148,3 +150,55 @@ public abstract class Bees {
         return "bee source_id = "+bee_id ;
     }
 }
+
+
+
+                                    /*  bonus */
+//List<Integer> parcours_abeille = new ArrayList<>();
+//
+//
+//
+//// les employées vont chaqu'une parcouir ce " parcours prédifinie par les éclaireuses "
+//public List<Integer> parcourir_et_modifier(Graph gr)
+//{
+//    // pour échanger deux aretes par deux autres ; il faut qu'elles soient non-adjacentes les unes des autres ;
+//    // si j'ai un parcours comme ça : ABCD
+//    // AB et BC ; BC et CD sont des aretes adjacentes
+//    // donc il faut prendre AB,CD les remplacés par AC,BD .
+//
+//    for(int sommet = 0; sommet<parcours_abeille.size()-3;sommet++)
+//    {
+//        int A = parcours_abeille.get(sommet);
+//        int B = parcours_abeille.get(sommet+1);
+//        int C = parcours_abeille.get(sommet+2);
+//        int D = parcours_abeille.get(sommet+3);
+//
+//        int poidsAB = gr.getPoidsArete(A,B);
+//        int poidsCD = gr.getPoidsArete(C,D);
+//
+//        int poids_avant = this.poids_dun_parcours(this.parcours_abeille,gr);
+//
+//        int poidsAC = gr.getPoidsArete(A,C);
+//        int poidsBD = gr.getPoidsArete(B,D);
+//
+//        int poids_apres = poids_avant -(poidsAB+poidsCD) + (poidsAC+poidsBD);
+//
+//        if(poids_apres < poids_avant)
+//        {
+//            this.parcours_abeille.set(sommet+1,C);
+//            this.parcours_abeille.set(sommet+2,A);
+//        }
+//    }
+//    return  this.parcours_abeille;
+//}
+//public int poids_dun_parcours(List<Integer> parcours,Graph gr)
+//{
+//    int s = 0 ;
+//    for(int i = 0 ; i < parcours.size() - 1;i++)
+//    {
+//        s+= gr.getPoidsArete(parcours.get(i),parcours.get(i+1));
+//    }
+//    s+= gr.getPoidsArete(parcours.getLast(),parcours.getFirst());
+//
+//    return s;
+//}

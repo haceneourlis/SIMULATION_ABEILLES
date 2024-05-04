@@ -34,7 +34,7 @@ public class Observatrice_bee extends Bees {
 
                             if (quality_now >= prev_quality) {
 
-                                src[i].reduceQuantityBy(10.99);
+                                src[i].reduireQuantite(10.99);
 
                                 source_to_explore = src[i];
                                 if (!source_to_explore.surMoi.contains(this))

@@ -81,7 +81,7 @@ public class Frelon extends Bees implements KeyListener, Voleur {
             this.bee_xpos = GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE;
         }
 
-        if (this.bee_xpos > GamePanel.LARGEUR_ECRAN - GamePanel.TAILLE_CELLULE) {
+        if (this.bee_xpos > GamePanel.LARGEUR_ECRAN ) {
             this.bee_xpos = 0;
         }
 
@@ -89,7 +89,7 @@ public class Frelon extends Bees implements KeyListener, Voleur {
             this.bee_ypos = GamePanel.HAUTEUR_ECRAN - GamePanel.TAILLE_CELLULE;
         }
 
-        if (this.bee_ypos >= GamePanel.HAUTEUR_ECRAN - GamePanel.TAILLE_CELLULE) {
+        if (this.bee_ypos >= GamePanel.HAUTEUR_ECRAN) {
             this.bee_ypos = 0;
         }
         voler();
