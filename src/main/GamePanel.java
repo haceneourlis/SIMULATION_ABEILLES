@@ -386,12 +386,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
                 }
 
-                for (Bees b_emp : employee_bees) {
-                    if (b_emp.source_to_explore != null) {
-                        System.out.println(b_emp + " is assigned to : " + b_emp.source_to_explore);
-                    }
-                }
-
                 GamePanel.onetime++;
                 Bees.reset_box();
             }
@@ -459,7 +453,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 ab_ob.getSourceInformation(les_fleurs);
                 how_much_in_home += ab_ob.exploreVoisinage();
             }
-            System.out.println("how much in home ? = " + how_much_in_home);
+            //System.out.println("how much in home ? = " + how_much_in_home);
             if (GamePanel.how_much_in_home == GamePanel.how_much_gone) {
                 do_it_again = true;
                 GamePanel.how_much_in_home = 0;

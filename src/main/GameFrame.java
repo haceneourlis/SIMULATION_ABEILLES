@@ -10,7 +10,7 @@ public class GameFrame extends JFrame {
     public GameFrame() throws IOException {
         panel = new GamePanel();
         this.add(panel);
-        this.setTitle("BEEEEZ");
+        this.setTitle("Simulation");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
