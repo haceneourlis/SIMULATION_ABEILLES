@@ -1,7 +1,4 @@
 
-Pour compiler ce programme :
-Placez-vous dans le répertoire : src
-      Tapez : java main.BeesGame
-         
-         
+Pour compiler ce programme , placez-vous dans le répertoire ``src`` ensuite tapez : java main.BeesGame .
+
 
